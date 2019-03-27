@@ -1,0 +1,3 @@
+ServiceName: "ServiceDevice"
+ServiceAddr: "127.0.0.1"
+ServicePort: "9731"
