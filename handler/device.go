@@ -11,36 +11,34 @@ import (
 
 func tranDevice(v *model.Device) *device.Device {
 	return &device.Device{
-		Id:               v.Id,
 		Code:             v.Code,
 		Name:             v.Name,
 		Model:            v.Model,
 		Brand:            v.Brand,
 		TagCode:          v.TagCode,
-		DepartmentId:     v.DepartmentId,
+		DepartmentCode:   v.DepartmentCode,
 		ManufacturerId:   v.ManufacturerId,
 		ManufacturerDate: v.ManufacturerDate,
 		Description:      v.Description,
 	}
 }
 
-func batchTranDevice(vs []*model.Device) map[int64]*device.Device {
-	ret := make(map[int64]*device.Device)
+func batchTranDevice(vs []*model.Device) map[string]*device.Device {
+	ret := make(map[string]*device.Device)
 	for _, v := range vs {
-		ret[v.Id] = tranDevice(v)
+		ret[v.Code] = tranDevice(v)
 	}
 	return ret
 }
 
 func rTranDevice(v *device.Device) *model.Device {
 	return &model.Device{
-		Id:               v.Id,
 		Code:             v.Code,
 		Name:             v.Name,
 		Model:            v.Model,
 		Brand:            v.Brand,
 		TagCode:          v.TagCode,
-		DepartmentId:     v.DepartmentId,
+		DepartmentCode:   v.DepartmentCode,
 		ManufacturerId:   v.ManufacturerId,
 		ManufacturerDate: v.ManufacturerDate,
 		Description:      v.Description,
@@ -74,7 +72,7 @@ func DeleteDevice(req *device.DeleteDeviceRequest) (rsp *device.DeleteDeviceResp
 		logrus.Errorf("DeleteDeviceRequest panic: %v, stack: %v", err, stacks)
 		rsp = getDeleteDeviceRequestResponse(common.CodeFailed, "panic")
 	})
-	err := model.DeleteDevice(model.GetLakaweiDb(), req.Id)
+	err := model.DeleteDevice(model.GetLakaweiDb(), req.Code)
 	if err != nil {
 		logrus.Errorf("delete device from mysql failed. err: %v", err)
 		return getDeleteDeviceRequestResponse(common.CodeFailed, fmt.Sprintf("err: %v", err))
@@ -91,23 +89,23 @@ func getDeleteDeviceRequestResponse(code common.RspCode, msg string) *device.Del
 	return rsp
 }
 
-func GetDeviceById(req *device.GetDeviceByIdRequest) (rsp *device.GetDeviceByIdResponse) {
+func GetDeviceByCode(req *device.GetDeviceByCodeRequest) (rsp *device.GetDeviceByCodeResponse) {
 	defer utils.RecoverPanic(func(err interface{}, stacks string) {
-		logrus.Errorf("GetDeviceByIdRequest panic: %v, stack: %v", err, stacks)
-		rsp = getGetDeviceByIdRequestResponse(common.CodeFailed, "panic")
+		logrus.Errorf("GetDeviceByCodeRequest panic: %v, stack: %v", err, stacks)
+		rsp = getGetDeviceByCodeRequestResponse(common.CodeFailed, "panic")
 	})
-	ret, err := model.GetDeviceById(model.GetLakaweiDb(), req.Ids)
+	ret, err := model.GetDeviceByCode(model.GetLakaweiDb(), req.Codes)
 	if err != nil {
 		logrus.Errorf("select device from mysql failed. err: %v", err)
-		return getGetDeviceByIdRequestResponse(common.CodeFailed, fmt.Sprintf("err: %v", err))
+		return getGetDeviceByCodeRequestResponse(common.CodeFailed, fmt.Sprintf("err: %v", err))
 	}
-	rsp = getGetDeviceByIdRequestResponse(common.CodeSuccess, "")
+	rsp = getGetDeviceByCodeRequestResponse(common.CodeSuccess, "")
 	rsp.Devices = batchTranDevice(ret)
 	return rsp
 }
 
-func getGetDeviceByIdRequestResponse(code common.RspCode, msg string) *device.GetDeviceByIdResponse {
-	rsp := &device.GetDeviceByIdResponse{
+func getGetDeviceByCodeRequestResponse(code common.RspCode, msg string) *device.GetDeviceByCodeResponse {
+	rsp := &device.GetDeviceByCodeResponse{
 		Code: code,
 		Msg:  msg,
 	}
@@ -119,7 +117,7 @@ func QueryDevice(req *device.QueryDeviceRequest) (rsp *device.QueryDeviceRespons
 		logrus.Errorf("QueryDeviceRequest panic: %v, stack: %v", err, stacks)
 		rsp = getQueryDeviceResponse(common.CodeFailed, "panic")
 	})
-	ret, cnt, err := model.QueryDevice(model.GetLakaweiDb(), rTranDevice(req.Device), req.Page, req.PageSize, req.TimeFilter)
+	ret, cnt, err := model.QueryDevice(model.GetLakaweiDb(), rTranDevice(req.Device), req.Page, req.PageSize, req.Filter)
 	if err != nil {
 		logrus.Errorf("filter device from mysql failed. err: %v", err)
 		return getQueryDeviceResponse(common.CodeFailed, fmt.Sprintf("err: %v", err))

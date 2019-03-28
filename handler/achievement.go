@@ -12,9 +12,9 @@ import (
 func tranAchievement(v *model.Achievement) *device.Achievement {
 	return &device.Achievement{
 		Id:                     v.Id,
-		DeviceId:               v.DeviceId,
-		MemberId:               v.MemberId,
-		DepartmentId:           v.DepartmentId,
+		DeviceCode:             v.DeviceCode,
+		MemberCode:             v.MemberCode,
+		DepartmentCode:         v.DepartmentCode,
 		AchievementDate:        v.AchievementDate,
 		AchievementDescription: v.AchievementDescription,
 		AchievementRemark:      v.AchievementRemark,
@@ -35,9 +35,9 @@ func batchTranAchievement(vs []*model.Achievement) map[int64]*device.Achievement
 func rTranAchievement(v *device.Achievement) *model.Achievement {
 	return &model.Achievement{
 		Id:                     v.Id,
-		DeviceId:               v.DeviceId,
-		MemberId:               v.MemberId,
-		DepartmentId:           v.DepartmentId,
+		DeviceCode:             v.DeviceCode,
+		MemberCode:             v.MemberCode,
+		DepartmentCode:         v.DepartmentCode,
 		AchievementDate:        v.AchievementDate,
 		AchievementDescription: v.AchievementDescription,
 		AchievementRemark:      v.AchievementRemark,
@@ -54,7 +54,7 @@ func AddAchievement(req *device.AddAchievementRequest) (rsp *device.AddAchieveme
 	})
 	err := model.InsertAchievement(model.GetLakaweiDb(), rTranAchievement(&req.Achievement))
 	if err != nil {
-		logrus.Errorf("insert achievement into mysql failed. deviceId: %v, err: %v", req.Achievement.DeviceId, err)
+		logrus.Errorf("insert achievement into mysql failed. deviceId: %v, err: %v", req.Achievement.DeviceCode, err)
 		return getAddAchievementRequestResponse(common.CodeFailed, fmt.Sprintf("err: %v", err))
 	}
 	rsp = getAddAchievementRequestResponse(common.CodeSuccess, "")
@@ -119,7 +119,7 @@ func QueryAchievement(req *device.QueryAchievementRequest) (rsp *device.QueryAch
 		logrus.Errorf("QueryAchievementRequest panic: %v, stack: %v", err, stacks)
 		rsp = getQueryAchievementResponse(common.CodeFailed, "panic")
 	})
-	ret, cnt, err := model.QueryAchievement(model.GetLakaweiDb(), rTranAchievement(req.Achievement), req.Page, req.PageSize, req.TimeFilter)
+	ret, cnt, err := model.QueryAchievement(model.GetLakaweiDb(), rTranAchievement(req.Achievement), req.Page, req.PageSize, req.Filter)
 	if err != nil {
 		logrus.Errorf("filter achievement from mysql failed. err: %v", err)
 		return getQueryAchievementResponse(common.CodeFailed, fmt.Sprintf("err: %v", err))

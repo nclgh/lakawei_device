@@ -1,6 +1,6 @@
 package model
 
 const (
-	DeviceRentStatusUnLend = 0
-	DeviceRentStatusLend   = 1
+	DeviceRentStatusUnLend = 1
+	DeviceRentStatusLend   = 2
 )

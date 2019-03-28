@@ -11,9 +11,10 @@ var (
 
 func Init() {
 	lakaweiDb = mysql.GetMysqlDB("lakawei")
+	//lakaweiDb = mysql.GetMysqlDB("lakawei").Debug()
+	lakaweiDb.SingularTable(true)
 }
 
 func GetLakaweiDb() *gorm.DB {
-	lakaweiDb.SingularTable(true)
 	return lakaweiDb
 }

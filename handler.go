@@ -38,8 +38,8 @@ func (server *ServiceDevice) DeleteDevice(req device.DeleteDeviceRequest, res *d
 	return nil
 }
 
-func (server *ServiceDevice) GetDeviceById(req device.GetDeviceByIdRequest, res *device.GetDeviceByIdResponse) error {
-	resp := handler.GetDeviceById(&req)
+func (server *ServiceDevice) GetDeviceByCode(req device.GetDeviceByCodeRequest, res *device.GetDeviceByCodeResponse) error {
+	resp := handler.GetDeviceByCode(&req)
 	*res = *resp
 	return nil
 }
@@ -70,6 +70,25 @@ func (server *ServiceDevice) GetAchievementById(req device.GetAchievementByIdReq
 
 func (server *ServiceDevice) QueryAchievement(req device.QueryAchievementRequest, res *device.QueryAchievementResponse) error {
 	resp := handler.QueryAchievement(&req)
+	*res = *resp
+	return nil
+}
+
+
+func (server *ServiceDevice) AddRent(req device.AddRentRequest, res *device.AddRentResponse) error {
+	resp := handler.AddRent(&req)
+	*res = *resp
+	return nil
+}
+
+func (server *ServiceDevice) ReturnRent(req device.ReturnRentRequest, res *device.ReturnRentResponse) error {
+	resp := handler.ReturnRent(&req)
+	*res = *resp
+	return nil
+}
+
+func (server *ServiceDevice) QueryRent(req device.QueryRentRequest, res *device.QueryRentResponse) error {
+	resp := handler.QueryRent(&req)
 	*res = *resp
 	return nil
 }

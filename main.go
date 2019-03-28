@@ -5,6 +5,7 @@ import (
 	"github.com/nclgh/lakawei_device/model"
 )
 
+
 func initCommon() {
 	model.Init()
 }
